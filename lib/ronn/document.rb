@@ -62,8 +62,9 @@ module Ronn
     # calling the block. The document is loaded and preprocessed before
     # the intialize method returns. The attributes hash may contain values
     # for any writeable attributes defined on this class.
-    def initialize(path=nil, attributes={}, &block)
+    def initialize(path=nil, output_path=nil, attributes={}, &block)
       @path = path
+      @output_path = output_path
       @basename = path.to_s =~ /^-?$/ ? nil : File.basename(path)
       @reader = block ||
         lambda do |f|
@@ -100,7 +101,7 @@ module Ronn
     # appends it to the dirname of the source document.
     def path_for(type=nil)
       if @basename
-        File.join(File.dirname(path), basename(type))
+        File.join(File.dirname(@output_path || path), basename(type))
       else
         basename(type)
       end

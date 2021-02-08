@@ -16,6 +16,7 @@
 #/   -5, --html                generate entire HTML page with layout
 #/   -f, --fragment            generate HTML fragment
 #/       --markdown            generate post-processed markdown output
+#/   -o, --output-directory=<dir>  place generated files in the specified directory
 #/
 #/ Document attributes:
 #/       --date=<date>          published date in YYYY-MM-DD format (bottom-center)
@@ -71,6 +72,7 @@ view    = false
 server  = false
 formats = nil
 options = {}
+output_directory = nil
 write_index = false
 styles  = %w[man]
 groff   = "groff -Wall -mtty-char -mandoc -Tascii"
@@ -101,6 +103,7 @@ ARGV.options do |argv|
   argv.on("-5", "--html")     { (formats ||= []) << 'html' }
   argv.on("-f", "--fragment") { (formats ||= []) << 'html_fragment' }
   argv.on("--markdown")       { (formats ||= []) << 'markdown' }
+  argv.on("-o", "--output-directory=V") { |val| output_directory = val }
 
   # html output options
   argv.on("-s", "--style=V")  { |val| styles += val.split(/[, \n]+/) }
@@ -163,7 +166,7 @@ end
 
 pid = nil
 wr = STDOUT
-documents = ARGV.map { |file| Ronn::Document.new(file, options) }
+documents = ARGV.map { |file| Ronn::Document.new(file, output_directory, options) }
 documents.each do |doc|
   # setup the man pipeline if the --man option was specified
   if view && !build

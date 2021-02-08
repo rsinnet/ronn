@@ -482,7 +482,7 @@ module Ronn
         name_or_node
       end
       if ref = index["#{name}#{section}"]
-        "<a class='man-ref' href='#{ref.url}'>#{name_or_node
+        "<a class='man-ref' href='#{ref.url.gsub(/\.ronn$/) { .html } }'>#{name_or_node
           }<span class='s'>#{section}</span></a>"
       else
         # warn "warn: manual reference not defined: '#{name}#{section}'"
